@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container-app {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+
+    background-color: #003d1c;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+    /* Efeito de vinheta */
+    color: #ffffff;
+
+    overflow: hidden;
+}
+
+.logo {
+    width: 100%;
+    height: 7%;
+    margin-bottom: 5px;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #8B4513;
+    /* Cor de fundo marrom, lembrando couro ou madeira */
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8),
+        /* Vinheta interna */
+        0 2px 4px rgba(0, 0, 0, 0.5);
+    /* Sombra leve na parte inferior */
+    border-radius: 5px;
+    /* Cantos levemente arredondados, se desejar */
+    background-image: linear-gradient(180deg, #8B4513, #A0522D);
+    /* Gradiente para textura */
+    color: #e2e2e2;
+    /* Cor do texto */
+}
+
+.prob {
+    width: 100%;
+    height: 46%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.bloco-prob {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #ffffff57;
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 20px;
+    color: #ffffffd7;
+}
+
+.bloco-prob > div {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.table {
+    width: 100%;
+    height: 14%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.bloco-table {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 3px solid #ffffff57;
+    border-radius: 15px;
+}
+
+.cards {
+    width: 100%;
+    height: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.linha {
+    margin-bottom: 5px;
+}
+
+.linha img {
+    margin: 0px 2px;
+    width: 6.1vw;
+    height: auto;
+    transition: opacity 0.5s ease;
+    opacity: 1;
+}
+
+.bloco-cards-left {
+    width: 30%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+    border-right: 2px solid #ffffff57;
+}
+
+.bloco-cards-right {
+    width: 70%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+.slot {
+    width: 38px;
+    height: 80%;
+    border-radius: 10px;
+    border: 1px solid #ffffff57;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot img {
+    max-height: 102%;
+}
+
+.img-desativada {
+    filter: drop-shadow(3px 4px 6px rgb(179, 255, 0));
+    cursor: not-allowed;
+}

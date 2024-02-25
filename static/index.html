@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+    <div class="container-app">
+        <div class="logo">GoLang Poker Monte Carlo</div>
+        <div class="prob">
+            <div class="bloco-prob"></div>
+        </div>
+        <div class="table">
+            <div class="bloco-table">
+                <div class="bloco-cards-left">
+                    <div class="slot slot-1"></div>
+                    <div class="slot slot-2"></div>
+                </div>
+                <div class="bloco-cards-right">
+                    <div class="slot slot-3"></div>
+                    <div class="slot slot-4"></div>
+                    <div class="slot slot-5"></div>
+                    <div class="slot slot-6"></div>
+                    <div class="slot slot-7"></div>
+                </div>
+            </div>
+        </div>
+        <div class="cards">
+        </div>
+    </div>
+</body>
+<script>
+    // Função para montar as cartas
+    function montarCartas() {
+        const naipes = ['clubs', 'diamonds', 'hearts', 'spades']; // Os naipes
+        const cartasEspeciais = ['ace', 'jack', 'queen', 'king']; // Cartas especiais
+        const divCards = document.querySelector('.cards'); // Selecione a div onde as cartas serão mostradas
+        let delay = 0; // Inicializa o delay
+
+        naipes.forEach(naipe => {
+            const linha = document.createElement('div'); // Cria uma nova linha para o naipe
+            linha.className = 'linha'; // Adiciona uma classe para estilização
+
+            // Função para adicionar cartas com delay
+            const adicionarCarta = (naipe, valor, imgPath) => {
+                setTimeout(() => {
+                    const img = document.createElement('img'); // Cria uma nova imagem
+                    img.src = imgPath; // Define o caminho da imagem
+                    img.style.opacity = 0; // Inicia com opacidade 0
+                    img.setAttribute('data-naipe', naipe); // Atribui naipe como data attribute
+                    img.setAttribute('data-valor', valor); // Atribui valor como data attribute
+                    img.onclick = function () { addCard(this.getAttribute('data-naipe'), this.getAttribute('data-valor')); }; // Adiciona evento onclick
+
+                    if (cartasSelecionadas.some(carta => carta.naipe === naipe && carta.valor === valor)) {
+                        img.classList.add("img-desativada");
+                    }
+
+                    linha.appendChild(img); // Adiciona a imagem à linha
+
+                    // Adiciona a transição de opacidade
+                    setTimeout(() => img.style.opacity = 1, 10);
+                }, delay);
+                delay += 100; // Incrementa o delay para a próxima carta
+            };
+
+            // Cartas numeradas
+            for (let i = 2; i <= 10; i++) {
+                const valor = i < 10 ? '0' + i : i.toString();
+                const imgPath = `/imgs/SmallCards/${naipe}_${valor}.png`; // Caminho para cartas numeradas
+                adicionarCarta(naipe, valor, imgPath); // Adiciona carta com delay
+            }
+
+            // Cartas especiais
+            cartasEspeciais.forEach(carta => {
+                const imgPath = `/imgs/SmallCards/${naipe}_${carta}.png`; // Caminho para cartas especiais
+                adicionarCarta(naipe, carta, imgPath); // Adiciona carta com delay
+            });
+
+            divCards.appendChild(linha); // Adiciona a linha completa à div das cartas
+        });
+    }
+    montarCartas();
+
+    function adicionarProbabilidades() {
+        const probabilidades = [
+            { classe: 'Royal-flush', texto: 'Royal-flush:' },
+            { classe: 'Straight-flush', texto: 'Straight-flush:' },
+            { classe: 'Four-of-a-kind', texto: 'Four-of-a-kind:' },
+            { classe: 'Full-house', texto: 'Full-house:' },
+            { classe: 'Flush', texto: 'Flush:' },
+            { classe: 'Straight', texto: 'Straight:' },
+            { classe: 'Three-of-a-kind', texto: 'Three-of-a-kind:' },
+            { classe: 'Two-pair', texto: 'Two-pair:' },
+            { classe: 'Pair', texto: 'Pair:' },
+            { classe: 'High-card', texto: 'High-card:' },
+            { classe: 'nada', texto: '----------------------------' },
+            { classe: 'win', texto: 'Win:' },
+            { classe: 'odd', texto: 'Odds:' }
+        ];
+        const blocoProb = document.querySelector('.bloco-prob'); // Seleciona o bloco de destino
+        let delay = 0; // Inicializa o delay
+
+        probabilidades.forEach(prob => {
+            setTimeout(() => {
+                const div = document.createElement('div'); // Cria a nova div
+                div.className = prob.classe; // Define a classe da div
+                div.textContent = prob.texto; // Define o texto da div
+                blocoProb.appendChild(div); // Adiciona a div ao bloco
+
+                setTimeout(() => div.style.opacity = 1, 10);
+            }, delay);
+            delay += 100; // Incrementa o delay para a próxima div
+        });
+    }
+    adicionarProbabilidades();
+
+    let cartasSelecionadas = []; // Array global para armazenar as cartas selecionadas
+
+    function addCard(naipe, valor) {
+        if (cartasSelecionadas.length >= 7) {
+            return; // Sai da função se já temos 7 cartas
+        }
+
+        // Verifica se a carta já foi selecionada
+        const cartaExiste = cartasSelecionadas.some(carta => carta.naipe === naipe && carta.valor === valor);
+        if (cartaExiste) {
+            return; // Sai da função se a carta já foi selecionada
+        }
+
+        const imgPath = `/imgs/SmallCards/${naipe}_${valor}.png`;
+        cartasSelecionadas.push({ naipe, valor, imgPath });
+        atualizarSlots();
+    }
+
+    function atualizarSlots() {
+        // Limpa todos os slots
+        for (let i = 1; i <= 7; i++) {
+            const slot = document.querySelector(`.slot-${i}`);
+            if (slot) slot.innerHTML = '';
+        }
+
+        // Atualiza os slots
+        cartasSelecionadas.forEach((carta, index) => {
+            const slot = document.querySelector(`.slot-${index + 1}`);
+            if (slot) {
+                const img = document.createElement('img');
+                img.src = carta.imgPath;
+                img.classList.add("img-desativada"); // Adiciona o filtro cinza
+                img.onclick = () => removerCarta(index);
+                slot.appendChild(img);
+            }
+        });
+
+        // Atualiza os filtros das imagens no deck
+        document.querySelectorAll('.cards img').forEach(img => {
+            const imgCarta = `${img.getAttribute('data-naipe')}_${img.getAttribute('data-valor')}.png`;
+            if (cartasSelecionadas.some(carta => carta.imgPath.endsWith(imgCarta))) {
+                img.classList.add("img-desativada");
+            } else {
+                img.classList.remove("img-desativada");
+            }
+        });
+    }
+
+    function removerCarta(index) {
+        cartasSelecionadas.splice(index, 1);
+        atualizarSlots();
+    }
+
+</script>
+
+</html>
