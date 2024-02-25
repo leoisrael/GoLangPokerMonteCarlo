@@ -96,10 +96,9 @@
             { classe: 'Three-of-a-kind', texto: 'Three-of-a-kind:' },
             { classe: 'Two-pair', texto: 'Two-pair:' },
             { classe: 'Pair', texto: 'Pair:' },
-            { classe: 'High-card', texto: 'High-card:' },
-            { classe: 'nada', texto: '----------------------------' },
-            { classe: 'win', texto: 'Win:' },
-            { classe: 'odd', texto: 'Odds:' }
+            // { classe: 'High-card', texto: 'High-card:' },
+            // { classe: 'win', texto: 'Win:' },
+            // { classe: 'odd', texto: 'Odds:' }
         ];
         const blocoProb = document.querySelector('.bloco-prob'); // Seleciona o bloco de destino
         let delay = 0; // Inicializa o delay
@@ -164,11 +163,77 @@
                 img.classList.remove("img-desativada");
             }
         });
+        calcularProbabilidade()
     }
 
     function removerCarta(index) {
         cartasSelecionadas.splice(index, 1);
         atualizarSlots();
+    }
+
+    function calcularProbabilidade() {
+        const totalCartas = cartasSelecionadas.length;
+
+        if (totalCartas === 5 || totalCartas === 6 || totalCartas === 7) {
+            let rota = "";
+            if (totalCartas === 5) {
+                rota = "/api/probabilidade/flop";
+            } else if (totalCartas === 6) {
+                rota = "/api/probabilidade/turn";
+            } else if (totalCartas === 7) {
+                rota = "/api/probabilidade/river";
+            }
+
+            const payload = {
+                mao: cartasSelecionadas.slice(0, 2),
+                mesa: cartasSelecionadas.slice(2)
+            };
+
+            fetch(rota, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Probabilidade calculada:", data);
+                    atualizarProbabilidades(data); // Atualiza a UI com as probabilidades calculadas
+                })
+                .catch(error => {
+                    console.error("Erro ao calcular probabilidade:", error);
+                });
+        }
+    }
+
+    function atualizarProbabilidades(data) {
+        const blocoProb = document.querySelector('.bloco-prob');
+        blocoProb.innerHTML = ''; // Limpa o bloco de probabilidade
+
+        // Mapeamento das chaves JSON para classes CSS
+        const mapeamentoClasses = {
+            'royal_flush': 'Royal-flush',
+            'straight_flush': 'Straight-flush',
+            'four_of_a_kind': 'Four-of-a-kind',
+            'full_house': 'Full-house',
+            'flush': 'Flush',
+            'straight': 'Straight',
+            'three_of_a_kind': 'Three-of-a-kind',
+            'two_pair': 'Two-pair',
+            'pair': 'Pair',
+            'high_card': 'High-card',
+            // Adicione mais mapeamentos conforme necessário
+        };
+
+        Object.entries(data).forEach(([chave, valor]) => {
+            const div = document.createElement('div');
+            const classe = mapeamentoClasses[chave] || chave; 
+            div.className = classe;
+            div.textContent = `${chave.replace(/_/g, ' ')}: ${valor}`;
+            div.style.opacity = 1;
+            blocoProb.appendChild(div);
+        });
     }
 
 </script>
